@@ -41,7 +41,7 @@ export function BottomNav({ role }: BottomNavProps) {
   };
 
   return (
-    <nav className="absolute bottom-0 left-0 right-0 z-50">
+    <nav className="fixed bottom-0 left-0 right-0 z-40">
       <div className="bg-linen/90 backdrop-blur-lg border-t border-stone/5 px-2 py-2 pb-[env(safe-area-inset-bottom,12px)] shadow-floating">
         <ul className="flex items-center justify-around">
           {navItems.map((item) => {

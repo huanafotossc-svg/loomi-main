@@ -1,19 +1,16 @@
-import { useState, useMemo, useCallback } from 'react';
+import React, { Fragment, useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Search, Bell, Camera, Video, Smartphone } from 'lucide-react';
+import { MapPin, Search } from 'lucide-react';
 import {
   FilterPills,
   JobTypeFilter,
   JobCard,
   FeaturedJobCard,
   SkeletonCard,
-  EmptyJobs,
-  Avatar,
-  PremiumBadge
+  EmptyJobs
 } from '../components';
 import { mockJobs, getHotelById } from '../data/mock';
-import { cn } from '../utils/helpers';
 import type { JobType, Job, Creator } from '../types';
 import { useAuth } from '../context/AuthContext';
 
@@ -62,20 +59,6 @@ export function FeedScreen() {
     return score;
   }, [userTags]);
 
-  const getJobIcon = (job: Job) => {
-    const hasPhotoReq = job.requirements.deliverables.some(d => d.type === 'photos');
-    const hasVideoReq = job.requirements.deliverables.some(d => d.type === 'institutional' || d.type === 'drone');
-    const hasSocialReq = job.requirements.deliverables.some(d => d.type === 'reels');
-
-    if (userTags.includes('videomaker') && hasVideoReq) return <Video className="w-5 h-5" />;
-    if (userTags.includes('photographer') && hasPhotoReq) return <Camera className="w-5 h-5" />;
-    if (userTags.includes('creator') && hasSocialReq) return <Smartphone className="w-5 h-5" />;
-
-    if (hasVideoReq) return <Video className="w-5 h-5" />;
-    if (hasSocialReq) return <Smartphone className="w-5 h-5" />;
-    return <Camera className="w-5 h-5" />;
-  };
-
   // Filter and Sort jobs
   const filteredJobs = useMemo(() => {
     let jobs = [...mockJobs];
@@ -120,46 +103,46 @@ export function FeedScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-linen pb-20">
-      {/* Editorial Header */}
-      <header className="px-5 py-6 flex items-start justify-between bg-transparent sticky top-0 z-20 backdrop-blur-md bg-linen/90">
+    <div className="min-h-screen bg-linen pb-16">
+      {/* Editorial Welcome Banner */}
+      <div className="pt-2 pb-5 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl text-ink leading-tight">
+          <h1 className="text-2xl sm:text-3xl text-ink leading-tight">
             <span className="font-editorial italic font-normal block">{getGreeting()},</span>
-            <span className="font-medium tracking-tight">{user?.name?.split(' ')[0]}</span>
+            <span className="font-semibold tracking-tight">{user?.name?.split(' ')[0] || 'Criador'}</span>
           </h1>
-          <div className="flex items-center gap-1.5 text-stone/60 text-xs mt-1.5">
+          <div className="flex items-center gap-1.5 text-stone/60 text-xs sm:text-sm mt-1.5">
+            <MapPin className="w-3.5 h-3.5 text-terracotta" />
             <span className="font-medium tracking-wide">{user?.location || 'São Paulo, SP'}</span>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate('/notifications')}
-            className="relative p-2 hover:bg-black/5 rounded-full transition-colors"
-          >
-            <Bell className="w-5 h-5 text-stone" strokeWidth={1.5} />
-            <span className="absolute top-2 right-2.5 w-2 h-2 bg-terracotta rounded-full ring-2 ring-linen" />
-          </button>
-          <button onClick={() => navigate('/profile')} className="hover:opacity-80 transition-opacity">
-            <Avatar src={user?.avatar} name={user?.name || 'User'} size="md" />
-          </button>
-        </div>
-      </header>
 
-      {/* Minimal Search Bar */}
-      <div className="px-5 mb-6">
+        <div className="hidden sm:flex items-center gap-2">
+          <motion.button
+            onClick={() => navigate('/search')}
+            className="flex items-center gap-2 px-4 py-2 bg-white/70 hover:bg-white text-stone/70 hover:text-ink rounded-xl border border-stone/10 shadow-soft text-sm font-medium transition-colors"
+            whileTap={{ scale: 0.98 }}
+          >
+            <Search className="w-4 h-4 text-forest" />
+            <span>Explorar catálogo</span>
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="mb-6">
         <motion.button
           onClick={() => navigate('/search')}
-          className="w-full flex items-center gap-3 px-4 py-3.5 bg-[#F0EDE7] rounded-2xl text-stone/50 hover:bg-[#E4E0D9] transition-colors shadow-inner-subtle"
+          className="w-full flex items-center gap-3 px-4 py-3.5 bg-white/70 hover:bg-white border border-stone/10 rounded-2xl text-stone/50 hover:text-stone/70 transition-all shadow-soft"
           whileTap={{ scale: 0.99 }}
         >
-          <Search className="w-4 h-4 ml-1" strokeWidth={2} />
-          <span className="text-sm font-medium tracking-wide">Buscar experiências criativas...</span>
+          <Search className="w-4 h-4 ml-1 text-forest" strokeWidth={2} />
+          <span className="text-sm font-medium tracking-wide">Buscar experiências criativas, hotéis e locais...</span>
         </motion.button>
       </div>
 
       {/* Filters */}
-      <div className="px-5 mb-5 space-y-4">
+      <div className="mb-6 space-y-4">
         <JobTypeFilter
           selected={selectedTypes}
           onChange={setSelectedTypes}
@@ -172,7 +155,7 @@ export function FeedScreen() {
       </div>
 
       {/* Job Count - Editorial Style */}
-      <div className="px-5 mb-6 flex items-center justify-between opacity-0 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
+      <div className="mb-6 flex items-center justify-between opacity-0 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
         <p className="font-editorial text-lg text-stone italic">
           {filteredJobs.length} oportunidades selecionadas
         </p>
@@ -180,19 +163,20 @@ export function FeedScreen() {
 
       {/* Content Feed */}
       {isLoading ? (
-        <div className="px-5 space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <SkeletonCard />
           <SkeletonCard />
           <SkeletonCard />
         </div>
       ) : filteredJobs.length === 0 ? (
-        <div className="px-5">
+        <div>
           <EmptyJobs onAction={() => {
             setSelectedTypes([]);
             setSelectedFilters([]);
           }} />
         </div>
       ) : (
-        <div className="px-5 space-y-8">
+        <div className="space-y-8">
           {/* Featured Job */}
           {featuredJob && selectedTypes.length === 0 && selectedFilters.length === 0 && (
             <motion.div
@@ -201,7 +185,9 @@ export function FeedScreen() {
               transition={{ duration: 0.8 }}
             >
               <div className="flex items-center gap-2 mb-3 px-1">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-stone/40 font-bold">Destaque do dia</span>
+                <span className="text-[10px] uppercase tracking-[0.2em] text-forest font-bold bg-forest/10 px-2.5 py-1 rounded-full">
+                  Destaque do dia
+                </span>
               </div>
               <FeaturedJobCard
                 job={featuredJob}
@@ -211,47 +197,48 @@ export function FeedScreen() {
             </motion.div>
           )}
 
-          {/* Regular Jobs with Editorial Quotes interspersed */}
-          {regularJobs.map((job, index) => {
-            const showQuote = (index + 1) % 3 === 0;
-            const quoteIndex = ((index + 1) / 3) % EDITORIAL_QUOTES.length;
+          {/* Regular Jobs - Grid Responsivo (1 col mobile, 2 cols tablet, 3 cols desktop) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {regularJobs.map((job, index) => {
+              const showQuote = (index + 1) % 4 === 0;
+              const quoteIndex = Math.floor((index + 1) / 4) % EDITORIAL_QUOTES.length;
 
-            return (
-              <div key={job.id}>
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.15, duration: 0.6 }}
-                >
-                  <JobCard
-                    job={job}
-                    hotel={getHotelById(job.hotelId)}
-                    onClick={() => navigate(`/job/${job.id}`)}
-                    onSave={() => { }}
-                    isSaved={false}
-                  // Visual rhythm: alternate compact variant for every 4th item or something if desired.
-                  // keeping default for now for consistency, but spacing is generous.
-                  />
-                </motion.div>
-
-                {/* Editorial Quote Divider */}
-                {showQuote && (
+              return (
+                <Fragment key={job.id}>
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    className="py-12 text-center px-8"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: (index % 6) * 0.1, duration: 0.5 }}
+                    className="flex flex-col h-full"
                   >
-                    <div className="editorial-divider mb-6" />
-                    <p className="editorial-quote text-xl leading-relaxed">
-                      "{EDITORIAL_QUOTES[quoteIndex]}"
-                    </p>
-                    <div className="editorial-divider mt-6" />
+                    <JobCard
+                      job={job}
+                      hotel={getHotelById(job.hotelId)}
+                      onClick={() => navigate(`/job/${job.id}`)}
+                      onSave={() => { }}
+                      isSaved={false}
+                    />
                   </motion.div>
-                )}
-              </div>
-            );
-          })}
+
+                  {/* Editorial Quote Divider */}
+                  {showQuote && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      className="col-span-full py-8 text-center px-4"
+                    >
+                      <div className="editorial-divider mb-4 max-w-xs mx-auto" />
+                      <p className="editorial-quote text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto text-stone/80">
+                        "{EDITORIAL_QUOTES[quoteIndex]}"
+                      </p>
+                      <div className="editorial-divider mt-4 max-w-xs mx-auto" />
+                    </motion.div>
+                  )}
+                </Fragment>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

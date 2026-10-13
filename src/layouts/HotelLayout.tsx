@@ -11,6 +11,7 @@ import {
   CreditCard,
   Plus
 } from 'lucide-react';
+import { TopNav } from '../components/TopNav';
 import { BottomNav, FloatingActionButton } from '../components';
 import { useAuth } from '../context/AuthContext';
 import { cn } from '../utils/helpers';
@@ -110,11 +111,16 @@ export function HotelLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-porcelain">
+    <div className="flex min-h-screen bg-porcelain flex-col lg:flex-row">
+      {/* Menu Superior no Mobile */}
+      <div className="lg:hidden">
+        <TopNav role="hotel" />
+      </div>
+
       <HotelSidebar />
 
-      <div className="flex-1 flex flex-col app-container lg:max-w-none">
-        <main className="flex-1 overflow-auto pb-24 lg:pb-0">
+      <div className="flex-1 flex flex-col w-full">
+        <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8 w-full max-w-7xl">
           <Outlet />
         </main>
 

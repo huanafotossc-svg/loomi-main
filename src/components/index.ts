@@ -15,6 +15,7 @@ export { Avatar, AvatarGroup } from './Avatar';
 
 // Navigation
 export { BottomNav, FloatingActionButton } from './BottomNav';
+export { TopNav } from './TopNav';
 
 // Cards
 export { JobCard, FeaturedJobCard, CreatorCard, HotelCard, SkeletonCard } from './Card';
