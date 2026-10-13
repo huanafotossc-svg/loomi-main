@@ -5,6 +5,7 @@ import { CreatorLayout, HotelLayout, AuthLayout } from './layouts';
 // Auth Screens
 import { AuthScreen } from './screens/AuthScreen';
 import { OnboardingScreen } from './screens/OnboardingScreen';
+import { LandingScreen } from './screens/LandingScreen';
 
 // Creator Screens
 import { FeedScreen } from './screens/FeedScreen';
@@ -96,11 +97,12 @@ function App() {
             <Route path="/creator/:creatorId" element={<CreatorPublicProfileScreen />} />
           </Route>
 
-          {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/auth" replace />} />
+          {/* Landing Page */}
+          <Route path="/" element={<LandingScreen />} />
+          <Route path="/landing" element={<LandingScreen />} />
 
           {/* Catch all */}
-          <Route path="*" element={<Navigate to="/auth" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

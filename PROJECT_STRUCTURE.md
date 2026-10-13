@@ -47,6 +47,9 @@
 
 ### Telas (`src/screens/`)
 
+#### Institucional
+- `LandingScreen.tsx` - Landing Page institucional e conversão
+
 #### Auth
 - `AuthScreen.tsx` - Login/Cadastro
 - `OnboardingScreen.tsx` - Seleção de perfil

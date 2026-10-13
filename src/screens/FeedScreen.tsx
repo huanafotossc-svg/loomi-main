@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Search } from 'lucide-react';
+import { MapPin, Search, Camera, Video, Smartphone } from 'lucide-react';
 import {
   FilterPills,
   JobTypeFilter,
@@ -58,6 +58,20 @@ export function FeedScreen() {
 
     return score;
   }, [userTags]);
+
+  const getJobIcon = (job: Job) => {
+    const hasPhotoReq = job.requirements.deliverables.some(d => d.type === 'photos');
+    const hasVideoReq = job.requirements.deliverables.some(d => d.type === 'institutional' || d.type === 'drone');
+    const hasSocialReq = job.requirements.deliverables.some(d => d.type === 'reels');
+
+    if (userTags.includes('videomaker') && hasVideoReq) return <Video className="w-5 h-5" />;
+    if (userTags.includes('photographer') && hasPhotoReq) return <Camera className="w-5 h-5" />;
+    if (userTags.includes('creator') && hasSocialReq) return <Smartphone className="w-5 h-5" />;
+
+    if (hasVideoReq) return <Video className="w-5 h-5" />;
+    if (hasSocialReq) return <Smartphone className="w-5 h-5" />;
+    return <Camera className="w-5 h-5" />;
+  };
 
   // Filter and Sort jobs
   const filteredJobs = useMemo(() => {

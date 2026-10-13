@@ -85,6 +85,9 @@ npm run dev
 
 ## Páginas Principais
 
+### Institucional
+- `/` - Landing Page institucional e conversão
+
 ### Fluxo Creator
 - `/auth` - Login/Cadastro
 - `/onboarding` - Seleção de perfil
